@@ -6,6 +6,8 @@ Created on Sat Mar 12 11:59:39 2016
 """
 import numpy as np
 import cv2
+import sys
+
 class ThresholdSegmentation():
  
     
@@ -37,7 +39,12 @@ class ThresholdSegmentation():
         
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    img = cv2.cvtColor(cv2.imread('potato.jpg'), cv2.COLOR_BGR2RGB)
+
+    if len(sys.argv) > 1:
+        img = cv2.cvtColor(cv2.imread(sys.argv[1]), cv2.COLOR_BGR2RGB)
+    else:
+        img = (np.random.rand(100,100) * 255).astype(np.uint8) 
+
     ts = ThresholdSegmentation(img, 128)
     seg_img, _ = ts.segment_image()    
     
@@ -47,3 +54,5 @@ if __name__ == '__main__':
     plt.subplot(1, 2, 2)
     plt.imshow(seg_img, interpolation='none')
     plt.colorbar()
+
+    plt.show()
