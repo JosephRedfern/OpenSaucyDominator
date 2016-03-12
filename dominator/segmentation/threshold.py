@@ -9,17 +9,28 @@ import cv2
 import sys
 
 class ThresholdSegmentation():
- 
-    
-    def __init__(self, image, threshold):
+
+    THRESHOLD_TYPES = (None,
+                       'GRAYSCALE',)
+
+    def __init__(self, image, threshold, thresh_type=None):
         ''' The ThresholdSegmentation class is used to remove all pixels
         within an image that fall below a specified threshold'''
         assert image.dtype == np.uint8, "Expected uint8, m8!, you gave us {0}".format(image.dtype)
         assert type(threshold) is int
-        
+        assert thresh_type in ThresholdSegmentation.THRESHOLD_TYPES
+
+        self.threshold_type = thresh_type
         self.image = image
         self.threshold = threshold
-        
+
+        self.preprocess_image()
+
+    def preprocess_image(self):
+        if self.threshold_type == 'GRAYSCALE':
+            assert self.image.ndim == 3
+            self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+
     def segment_image(self):
         ''' Segments an image using a thresholding appraoch'''
         binary = self.binary_mask()
@@ -41,11 +52,11 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     if len(sys.argv) > 1:
-        img = cv2.cvtColor(cv2.imread(sys.argv[1]), cv2.COLOR_BGR2RGB)
+        img = cv2.imread(sys.argv[1])
     else:
-        img = (np.random.rand(100,100) * 255).astype(np.uint8) 
+        img = (np.random.rand(100,100, 3) * 255).astype(np.uint8)
 
-    ts = ThresholdSegmentation(img, 128)
+    ts = ThresholdSegmentation(img, 128, thresh_type='GRAYSCALE')
     seg_img, _ = ts.segment_image()    
     
     plt.figure('ThresholdSegmentation Example')
