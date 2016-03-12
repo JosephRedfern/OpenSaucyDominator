@@ -5,7 +5,7 @@ Created on Sat Mar 12 11:59:39 2016
 @author: kaelon
 """
 import numpy as np
-
+import cv2
 class ThresholdSegmentation():
  
     
@@ -35,10 +35,9 @@ class ThresholdSegmentation():
         
         return binary 
         
-
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    img = (np.random.rand(100,100) * 255).astype(np.uint8) 
+    img = cv2.cvtColor(cv2.imread('potato.jpg'), cv2.COLOR_BGR2RGB)
     ts = ThresholdSegmentation(img, 128)
     seg_img, _ = ts.segment_image()    
     
